@@ -1,0 +1,47 @@
+##################################################################################################
+# redisconsumer service
+##################################################################################################
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: redisconsumer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redisconsumer
+  labels:
+    app: redisconsumer
+    service: redisconsumer
+spec:
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8080
+  selector:
+    app: redisconsumer
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redisconsumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redisconsumer
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: redisconsumer
+        version: v1
+    spec:
+      serviceAccountName: redisconsumer
+      containers:
+        - image: docker.io/niteshsince1982/redis-poc:0.0.7
+          imagePullPolicy: IfNotPresent
+          name: redisconsumer
+          ports:
+            - containerPort: 8080

@@ -40,8 +40,17 @@ spec:
     spec:
       serviceAccountName: redisconsumer
       containers:
-        - image: docker.io/niteshsince1982/redis-poc-singlenode-logs:0.0.1
+        - image: docker.io/niteshsince1982/redis-poc-singlenode-logs:0.0.2
           imagePullPolicy: IfNotPresent
           name: redisconsumer
           ports:
             - containerPort: 8080
+          env:
+          - name: REDIS_HOST
+            value: "redis.default.svc.cluster.local"
+          # - name: REDIS_HOST
+          #   value: rfs-redisfailover.default.svc.cluster.local
+          - name: REDIS_PORT
+            value: "6379"
+          - name: IS_HA
+            value: "false"         

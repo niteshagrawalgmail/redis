@@ -37,6 +37,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -130,10 +132,34 @@ func getRedisClient() redis.UniversalClient {
 		log.Println("Redis client exists. Using the same")
 		return client
 	} else {
-		client = redis.NewUniversalClient(&redis.UniversalOptions{
-			Addrs: []string{"redis.default.svc.cluster.local:6379"},
-		})
+		isRedisHASetup := isRedisHA()
+		if isRedisHASetup {
+			redisUrl := getRedisURL()
+			client = redis.NewUniversalClient(&redis.UniversalOptions{
+				Addrs:      []string{redisUrl},
+				MasterName: "mymaster",
+			})
+		} else {
+			redisUrl := getRedisURL()
+			client = redis.NewUniversalClient(&redis.UniversalOptions{
+				Addrs: []string{redisUrl},
+			})
+		}
+
 		log.Println("Creating a new Redis Client and using it")
 		return client
 	}
+}
+
+func getRedisURL() string {
+	host := os.Getenv("REDIS_HOST")
+	port := os.Getenv("REDIS_PORT")
+	url := host + ":" + port
+	return url
+}
+
+func isRedisHA() bool {
+	isHA := os.Getenv("IS_HA")
+	val, _ := strconv.ParseBool(isHA)
+	return val
 }

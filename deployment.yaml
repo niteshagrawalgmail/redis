@@ -20,7 +20,7 @@ spec:
       targetPort: 8080
   selector:
     app: redisconsumer
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -40,7 +40,7 @@ spec:
     spec:
       serviceAccountName: redisconsumer
       containers:
-        - image: docker.io/niteshsince1982/redis-poc:0.0.7
+        - image: docker.io/niteshsince1982/redis-poc-singlenode-logs:0.0.1
           imagePullPolicy: IfNotPresent
           name: redisconsumer
           ports:

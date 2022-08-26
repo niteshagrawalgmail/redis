@@ -28,6 +28,6 @@ spec:
         prefix: /
     route:
     - destination:
-        host: redisconsumer.testredis.svc.cluster.local
+        host: redisconsumer.default.svc.cluster.local
         port:
           number: 8000

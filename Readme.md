@@ -10,9 +10,9 @@ Redis HA setup is deployed using Redis operator `https://github.com/spotahome/re
 
 * To store data to Redis
 
-`http://<externalIP>:8000/store?key=someKey&value=someValue`
+`http://<externalIP>/store?key=someKey&value=someValue`
 
 * To read data from Redis
 
-`http://<externalIP>:8000/get?key=someKey`
+`http://<externalIP>/get?key=someKey`
 

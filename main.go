@@ -134,16 +134,39 @@ func getRedisClient() redis.UniversalClient {
 	} else {
 		isRedisHASetup := isRedisHA()
 		if isRedisHASetup {
+			log.Println("Redis is HA setup")
 			redisUrl := getRedisURL()
-			client = redis.NewUniversalClient(&redis.UniversalOptions{
-				Addrs:      []string{redisUrl},
-				MasterName: "mymaster",
-			})
+			password := getPassword()
+			if password != "" {
+				client = redis.NewUniversalClient(&redis.UniversalOptions{
+					Addrs:      []string{redisUrl},
+					Password:   password,
+					MasterName: "mymaster",
+				})
+			} else {
+				client = redis.NewUniversalClient(&redis.UniversalOptions{
+					Addrs:      []string{redisUrl},
+					MasterName: "mymaster",
+				})
+			}
+
 		} else {
+			log.Println("Redis is non-HA setup")
 			redisUrl := getRedisURL()
-			client = redis.NewUniversalClient(&redis.UniversalOptions{
-				Addrs: []string{redisUrl},
-			})
+			password := getPassword()
+			if password != "" {
+				log.Println("Redis client with password")
+				client = redis.NewUniversalClient(&redis.UniversalOptions{
+					Addrs:    []string{redisUrl},
+					Password: password,
+				})
+			} else {
+				log.Println("Redis client without password")
+				client = redis.NewUniversalClient(&redis.UniversalOptions{
+					Addrs: []string{redisUrl},
+				})
+			}
+
 		}
 
 		log.Println("Creating a new Redis Client and using it")
@@ -162,4 +185,9 @@ func isRedisHA() bool {
 	isHA := os.Getenv("IS_HA")
 	val, _ := strconv.ParseBool(isHA)
 	return val
+}
+
+func getPassword() string {
+	password := os.Getenv("REDIS_PASSWORD")
+	return password
 }

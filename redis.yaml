@@ -47,7 +47,8 @@ metadata:
   name: example-redis-config
 data:
   redis-config: |
-    protected-mode no
+    protected-mode yes
+    requirepass some@password
 
 ---
 

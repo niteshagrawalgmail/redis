@@ -154,18 +154,11 @@ func getRedisClient() redis.UniversalClient {
 			log.Println("Redis is non-HA setup")
 			redisUrl := getRedisURL()
 			password := getPassword()
-			if password != "" {
-				log.Println("Redis client with password")
-				client = redis.NewUniversalClient(&redis.UniversalOptions{
-					Addrs:    []string{redisUrl},
-					Password: password,
-				})
-			} else {
-				log.Println("Redis client without password")
-				client = redis.NewUniversalClient(&redis.UniversalOptions{
-					Addrs: []string{redisUrl},
-				})
-			}
+			log.Println("Redis client with password")
+			client = redis.NewUniversalClient(&redis.UniversalOptions{
+				Addrs:    []string{redisUrl},
+				Password: password,
+			})
 
 		}
 
@@ -189,5 +182,8 @@ func isRedisHA() bool {
 
 func getPassword() string {
 	password := os.Getenv("REDIS_PASSWORD")
+	//log.Printf("password is  %v for redis", password)
+	//password := ""
+	log.Printf("password is  %v for redis", password)
 	return password
 }

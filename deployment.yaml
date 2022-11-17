@@ -41,7 +41,7 @@ spec:
       serviceAccountName: redisconsumer
       containers:
         - image: docker.io/niteshsince1982/redis-consumer:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: redisconsumer
           ports:
             - containerPort: 8080
@@ -53,6 +53,10 @@ spec:
           - name: REDIS_PORT
             value: "6379"
           - name: REDIS_PASSWORD
-            value: ""
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_PASSWORD
+                optional: true
           - name: IS_HA
             value: "false"         
